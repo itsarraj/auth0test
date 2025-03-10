@@ -1,4 +1,6 @@
 {
   "domain": "dev-hkyr5jin2fguz3is.us.auth0.com",
-  "clientId": "cH80dsyhxbFedcQSpzu8ABSMkgluxRPY"
+  "clientId": "cH80dsyhxbFedcQSpzu8ABSMkgluxRPY",
+  "clientSecret": "HVaBNiF56RRx8cxLQcBaDdDA53RiypcOsTIW3OZiFcohbLjx-Sqz_mU5FLEgtjYf",
+  "audience": "https://my-test-api/"
 }

@@ -1,5 +1,3 @@
-console.log('Auth0 client initialized');
-
 let auth0Client = null;
 
 async function initAuth0() {
@@ -10,6 +8,9 @@ async function initAuth0() {
   auth0Client = await auth0.createAuth0Client({
     domain: config.domain,
     clientId: config.clientId,
+    authorizationParams: {
+      audience: config.audience
+    }
   });
 }
 
@@ -36,6 +37,31 @@ function showForm(formNumber) {
   document.getElementById(`form${formNumber}`).classList.remove('hidden');
 }
 
+async function submitForm(formId, endpoint) {
+  const form = document.getElementById(formId);
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  try {
+    const token = await auth0Client.getTokenSilently();
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    console.log('Form submission result:', result);
+    alert(result.msg);
+  } catch (error) {
+    console.error('Form submission failed:', error);
+    alert('Form submission failed');
+  }
+}
+
 window.onload = async function () {
   await initAuth0();
 
@@ -49,4 +75,24 @@ window.onload = async function () {
   document
     .getElementById('btn3')
     .addEventListener('click', () => authenticateAndRedirect(3));
+
+  // Add event listeners to form submissions
+  document
+    .getElementById('form1Form')
+    .addEventListener('submit', (e) => {
+      e.preventDefault();
+      submitForm('form1Form', '/submit-form1');
+    });
+  document
+    .getElementById('form2Form')
+    .addEventListener('submit', (e) => {
+      e.preventDefault();
+      submitForm('form2Form', '/submit-form2');
+    });
+  document
+    .getElementById('form3Form')
+    .addEventListener('submit', (e) => {
+      e.preventDefault();
+      submitForm('form3Form', '/submit-form3');
+    });
 };
